@@ -3,6 +3,12 @@
 #include "stack.h"
 #include <ctype.h>
 #include <assert.h>
+#include <iostream>
+#include <stdio.h>
+using std::cin;
+using std::cout;
+using std::endl;
+#define SPLIT_LINE printf("---------------------------------------\n")
 
 //最长子序列{{{
 
@@ -311,5 +317,10 @@ bool _knap_it(int s, int n)
 
 }
 
+//}}}
+//最大K个数{{{
+void findKMax_selectSort(int *data, int k, int *res);      /* 选择排序 O(n*k) */
+void findKMax_quickSort(int *data, int k, int *res); /* 快排 O(n*logk) */
+void findKMax_minHeap(int *data, int k, int *res); /* 最小堆 O(n*logk) */
 //}}}
 #endif
