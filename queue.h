@@ -55,6 +55,7 @@ template < typename T > class LinkQueueImpByTwoStack_jxc:public Queue_jxc < T > 
 };
 
 //}}}
+//链式队列{{{
 
 template < typename T > class LinkQueue_jxc:public Queue_jxc < T > {
   private:
@@ -105,6 +106,8 @@ template < typename T > class LinkQueue_jxc:public Queue_jxc < T > {
 	}
 
 };
+//}}}
+//顺序队列{{{
 
 template < typename T > class ArrQueue_jxc:public Queue_jxc < T > {
   private:
@@ -159,4 +162,6 @@ template < typename T > class ArrQueue_jxc:public Queue_jxc < T > {
 		return true;
 	}
 };
+//}}}
+
 #endif

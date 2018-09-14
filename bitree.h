@@ -2,7 +2,9 @@
 #define jxc_bitree_h
 #include "stack.h"
 #include "queue.h"
-#include "ds_common.h"
+#include <iostream>
+using std::cout;
+using std::endl;
 
 //链式 二叉树{{{
 
@@ -288,6 +290,9 @@ template < typename T > class MinHeap_jxc {
 	~MinHeap_jxc() {
 		delete[]_arr;
 	}
+	void clear(){
+		_cur_size = 0;
+	}
 	bool isEmpty() {
 		return _cur_size == 0;
 	}
@@ -302,6 +307,11 @@ template < typename T > class MinHeap_jxc {
 	}
 	int parent(int pos) {
 		return (pos - 1) / 2;
+	}
+	bool top(T &r){
+		if(_cur_size <= 0) return false;
+		r = _arr[0];
+		return true;
 	}
 	void print() {
 		for (int i = 0; i < _cur_size; i++) {

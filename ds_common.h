@@ -7,6 +7,8 @@
 #include <queue>
 #include <vector>
 #include <functional>
+#include "bitree.h"
+#include "graph.h"
 using std::cin;
 using std::cout;
 using std::endl;
@@ -322,8 +324,82 @@ bool _knap_it(int s, int n)
 
 //}}}
 //最大K个数{{{
-void findKMax_selectSort(int *data, int k, int *res);      /* 选择排序 O(n*k) */
-void findKMax_quickSort(int *data, int k, int *res); /* 快排 O(n*logk) */
-void findKMax_minHeap(int *data, int k, int *res); /* 最小堆 O(n*logk) */
+void findKMax_selectSort(const int *data, int len, int k, int *arr);	/* 选择排序 O(n*k) */
+void findKMax_quickSort(const int *data, int len, int k, int *arr);	/* 快排 O(n*logk) */
+void findKMax_minHeap(const int *data, int len, int k, int *arr)
+{								/* 最小堆 O(n*logk) */
+	static MinHeap_jxc < int >mh(k);
+	mh.clear();
+	for (int i = 0; i < k; i++) {
+		mh.insert(data[i]);
+	}
+	int res;
+	for (int i = k; i < len; i++) {
+		if (data[i] > mh.top(res)) {
+			mh.remove(0, res);
+			mh.insert(data[i]);
+		}
+	}
+	int index = 0;
+	while (mh.remove(0, res)) {
+		arr[index++] = res;
+	}
+
+}
+
+//}}}
+//Dijkstra单源最短路径{{{
+class Dist {
+  public:
+	int index, length, pre;
+	bool operator>(const Dist & rhs) {
+		return length > rhs.length;
+}};
+ostream & operator<<(ostream & os, const Dist & d)
+{
+	char s[100];
+	sprintf(s, "(i:%d,l:%d,p:%d)", d.index, d.length, d.pre);
+	os << s << " ";
+	return os;
+}
+
+void dijkstra(GraphBase_jxc & g, Dist * d_arr, int s)
+{
+	int *mark = g.mark();
+	int v_num = g.verticesNum();
+	int e_num = g.edgesNum();
+	memset(mark, 0, v_num * sizeof(int));
+	for (int i = 0; i < v_num; i++) {
+		mark[i] = 0;
+		d_arr[i].index = i, d_arr[i].length = INT_MAX, d_arr[i].pre = s;
+	}
+	d_arr[s].length = 0;
+	MinHeap_jxc < Dist > min_heap(e_num);
+	min_heap.insert(d_arr[s]);
+	for (int i = 0; i < v_num; i++) {
+		bool found = false;
+		Dist d;
+		while (!min_heap.isEmpty()) {
+			min_heap.remove(0, d);
+			if (mark[d.index] == 0) {
+				found = true;
+				break;
+			}
+		}
+		if (!found)
+			break;
+		mark[d.index] = 1;
+		Edge_jxc e = g.firstEdge(d.index);
+		while (g.isEdge(e)) {
+			if (d_arr[e.to].length > (d_arr[d.index].length + e.weight)) {
+				d_arr[e.to].length = d_arr[d.index].length + e.weight;
+				d_arr[e.to].pre = d.index;
+				min_heap.insert(d_arr[e.to]);
+			}
+			e = g.nextEdge(e);
+		}
+	}
+}
+
 //}}}
 #endif

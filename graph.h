@@ -2,6 +2,8 @@
 #define jxc_graph_h
 #include <limits.h>
 #include "list.h"
+#include "queue.h"
+using std::ostream;
 
 class Edge_jxc {
   public:
@@ -22,10 +24,12 @@ class GraphBase_jxc {
 	int *_mark;
 	int *_indegree;
   public:
+	int *mark(){
+		return _mark;
+	}
 	int verticesNum() {
 		return _num_vertex;
-	}
-	GraphBase_jxc(int n) {
+	} GraphBase_jxc(int n) {
 		_num_vertex = n;
 		_num_edge = 0;
 		_indegree = new int[n];
@@ -58,6 +62,81 @@ class GraphBase_jxc {
 	}
 	int getWeight(Edge_jxc e) {
 		return e.weight;
+	}
+	void DFS(int v) {
+		memset(_mark, 0, _num_vertex * sizeof(int));
+		_dfs(v);
+		for (int i = 0; i < _num_vertex; i++) {
+			if (_mark[i] == 0)
+				_dfs(i);
+		}
+	}
+	void BFS(int v) {
+		memset(_mark, 0, _num_vertex * sizeof(int));
+		_bfs(v);
+		for (int i = 0; i < _num_vertex; i++) {
+			if (_mark[i] == 0)
+				_bfs(i);
+		}
+	}
+	void topSort() {
+		memset(_mark, 0, _num_vertex * sizeof(int));
+		static ArrQueue_jxc < int >aq(_num_vertex);
+		aq.clear();
+		for (int i = 0; i < _num_vertex; i++) {
+			if (_indegree[i] == 0)
+				aq.enQueue(i);
+		}
+		int v;
+		while (aq.deQueue(v)) {
+			cout << v << endl;
+			_mark[v] = 1;
+			Edge_jxc e = firstEdge(v);
+			while (isEdge(e)) {
+				if (--_indegree[e.to] == 0)
+					aq.enQueue(e.to);
+				e = nextEdge(e);
+			}
+		}
+		for (int i = 0; i < _num_vertex; i++) {
+			if (_mark[i] == 0) {
+				cout << "cyclic graph" << endl;
+				break;
+			}
+		}
+	}
+  private:
+	void _bfs(int v) {
+		if (v < 0 || v >= _num_vertex)
+			return;
+		static ArrQueue_jxc < int >aq(_num_vertex);
+		aq.clear();
+		aq.enQueue(v);
+		int res;
+		while (aq.deQueue(res)) {
+			if(_mark[res] == 1) break;
+			cout << res << endl;
+			_mark[res] = 1;
+			Edge_jxc e = firstEdge(res);
+			while (isEdge(e)) {
+				if (_mark[e.to] == 0) {
+					aq.enQueue(e.to);
+				}
+				e = nextEdge(e);
+			}
+		}
+	}
+	void _dfs(int v) {
+		if (v < 0 || v >= _num_vertex || _mark[v] == 1)
+			return;
+		_mark[v] = 1;
+		cout << v << endl;
+		Edge_jxc e = firstEdge(v);
+		while (isEdge(e)) {
+			if (_mark[e.to] == 0)
+				_dfs(e.to);
+			e = nextEdge(e);
+		}
 	}
 };
 
@@ -138,16 +217,16 @@ class GraphAdjm_jxc:public GraphBase_jxc {
 struct NodeAdjl_jxc {
 	int v;
 	int w;
-	bool operator==(const NodeAdjl_jxc &rhs){
+	bool operator==(const NodeAdjl_jxc & rhs) {
 		return v == rhs.v;
-	}
-};
-ostream& operator<<(ostream &os, const NodeAdjl_jxc &node){
+}};
+ostream & operator<<(ostream & os, const NodeAdjl_jxc & node)
+{
 	os << "(v:" << node.v << ",w:" << node.w << ')';
 	return os;
 }
 
-class GraphAdjl_jxc : public GraphBase_jxc{
+class GraphAdjl_jxc:public GraphBase_jxc {
   private:
 	LinkList_jxc < NodeAdjl_jxc > *_lljs;
   public:
@@ -159,33 +238,37 @@ class GraphAdjl_jxc : public GraphBase_jxc{
 		if  (node != NULL)
 			    e.from = v, e.to = node->data.v, e.weight = node->data.w;
 		    return e;
-	}
-	Edge_jxc nextEdge(Edge_jxc pre){
+	} Edge_jxc nextEdge(Edge_jxc pre) {
 		Edge_jxc e;
 		e.from = pre.from;
-		NodeLink_jxc<NodeAdjl_jxc> *p = _lljs[pre.from].getPos({pre.from,0});
-		if(p && p->next){
+		NodeLink_jxc < NodeAdjl_jxc > *p = _lljs[pre.from].getPos( {
+																  pre.to, 0}
+		);
+		if (p && p->next) {
 			e.to = p->next->data.v;
 			e.weight = p->next->data.w;
 		}
 		return e;
 	}
-	void setEdge(int f, int t, int w){
-		NodeLink_jxc<NodeAdjl_jxc> * p = _lljs[f].getPos({t,0});
-		if(p){
+	void setEdge(int f, int t, int w) {
+		NodeLink_jxc < NodeAdjl_jxc > *p = _lljs[f].getPos( {
+														   t, 0});
+		if (p) {
 			p->data.w = w;
-		}else{
-			_lljs[f].append({t,w});
+		} else {
+			_lljs[f].append( {
+							t, w}
+			);
 			_indegree[t]++;
 			_num_edge++;
 		}
 	}
-	void delEdge(int f, int t){
-		NodeLink_jxc<NodeAdjl_jxc> *p = _lljs[f]._head;
-		NodeAdjl_jxc to_find = {t,0};
-		while(p->next){
-			if(p->next->data == to_find){
-				NodeLink_jxc<NodeAdjl_jxc> *tmp = p->next;
+	void delEdge(int f, int t) {
+		NodeLink_jxc < NodeAdjl_jxc > *p = _lljs[f]._head;
+		NodeAdjl_jxc to_find = { t, 0 };
+		while (p->next) {
+			if (p->next->data == to_find) {
+				NodeLink_jxc < NodeAdjl_jxc > *tmp = p->next;
 				p->next = p->next->next;
 				delete tmp;
 				break;
@@ -193,17 +276,17 @@ class GraphAdjl_jxc : public GraphBase_jxc{
 			p = p->next;
 		}
 	}
-	void print(){
+	void print() {
 		for (int i = 0; i < _num_vertex; i++) {
-			NodeLink_jxc<NodeAdjl_jxc> *p = _lljs[i]._head;
-			while(p->next){
+			NodeLink_jxc < NodeAdjl_jxc > *p = _lljs[i]._head;
+			while (p->next) {
 				cout << p->next->data << " ";
-				p=p->next;
+				p = p->next;
 			}
 			cout << endl;
 		}
 	}
-   	GraphAdjl_jxc(int n):GraphBase_jxc(n) {
+	GraphAdjl_jxc(int n):GraphBase_jxc(n) {
 		_lljs = new LinkList_jxc < NodeAdjl_jxc >[n];
 	}
 	~GraphAdjl_jxc() {
