@@ -109,10 +109,12 @@ template < typename T > class NodeLink_jxc {	/* 单链表节点 */
 
 template < typename T > class LinkStack_jxc;
 template < typename T > class LinkQueue_jxc;
+class GraphAdjl_jxc ;
 template < typename T > class LinkList_jxc:public List_jxc < T > {
 	using List_jxc < T >::_cur_len;
 	friend LinkStack_jxc < T >;
 	friend LinkQueue_jxc < T >;
+	friend GraphAdjl_jxc;
 	/*
 	 * 单链表
 	 */
@@ -189,6 +191,14 @@ template < typename T > class LinkList_jxc:public List_jxc < T > {
 		_cur_len++;
 		_tail = _tail->next;
 		return true;
+	}
+	NodeLink_jxc<T> *getPos(const T &v){
+		NodeLink_jxc<T> *p = _head->next;
+		while(p){
+			if(p->data == v) return p;
+			p = p->next;
+		}
+		return NULL;
 	}
 };
 

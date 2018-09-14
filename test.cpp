@@ -5,7 +5,8 @@
 #include <assert.h>
 #include "queue.h"
 #include "string.h"
-#include "tree.h"
+#include "bitree.h"
+#include "graph.h"
 template < typename T > void func(NodeBiTree_jxc < T > *node)
 {
 	cout << node->data << ":";
@@ -21,25 +22,19 @@ template < typename T > void func(NodeBiTree_jxc < T > *node)
 
 int main(int argc, const char *argv[])
 {
-	BST_jxc < int >bstj;
-	int arr[] = { 50, 92, 88, 20, 100, 5, 35, 53, 19, 55 };
-	NodeBiTree_jxc < int >*tmp;
-	for (unsigned i = 0; i < sizeof(arr) / sizeof(int); i++) {
-		tmp = new NodeBiTree_jxc < int >(arr[i]);
-		bstj.insertNode(tmp);
-	}
-	bstj.inOrder(func);
+	GraphAdjm_jxc gaj(4);
+	gaj.print();
 	SPLIT_LINE;
-	bstj.preOrder(func);
+	gaj.setEdge(0,1,1);
+	gaj.setEdge(0,2,1);
+	gaj.setEdge(2,3,1);
+	gaj.setEdge(3,0,1);
+	gaj.print();
 	SPLIT_LINE;
-//  for (unsigned i = 0; i < sizeof(arr)/sizeof(int); i++) {
-//      printf("%p\n", bstj.searchNode(arr[i]));
-//  }
-//  printf("%lu\n", sizeof(NodeBiTree_jxc<int>));
-	bstj.deleteNode(55);
-	bstj.preOrder(func);
-	SPLIT_LINE;
-	bstj.deleteNode(50);
-	bstj.preOrder(func);
-	return 0;
+	GraphAdjl_jxc gal(4);
+	gal.setEdge(0,1,1);
+	gal.setEdge(0,2,1);
+	gal.setEdge(2,3,1);
+	gal.setEdge(3,0,1);
+	gal.print();
 }

@@ -1,13 +1,16 @@
 #ifndef ds_jxc_h
 #define ds_jxc_h
-#include "stack.h"
 #include <ctype.h>
 #include <assert.h>
 #include <iostream>
 #include <stdio.h>
+#include <queue>
+#include <vector>
+#include <functional>
 using std::cin;
 using std::cout;
 using std::endl;
+using std::ostream;
 #define SPLIT_LINE printf("---------------------------------------\n")
 
 //最长子序列{{{
