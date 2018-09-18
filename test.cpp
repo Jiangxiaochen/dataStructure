@@ -1,29 +1,58 @@
-#include <stdio.h>
-#include "list.h"
-#include "stack.h"
 #include "ds_common.h"
-#include <assert.h>
-#include "queue.h"
-#include "string.h"
-#include "bitree.h"
-#include "graph.h"
+
+
+//gen tree{{{
+void tree7_19(GraphBase_jxc & G)
+{
+	G.setEdge(0,1,10);
+	G.setEdge(0,4,100);
+	G.setEdge(0,3,30);
+	G.setEdge(1,2,50);
+	G.setEdge(2,4,10);
+	G.setEdge(3,1,10);
+	G.setEdge(3,2,20);
+	G.setEdge(3,4,60);
+}
+void tree7_23(GraphBase_jxc & G)
+{
+	G.setEdge(0,1,20);
+	G.setEdge(1,0,20);
+	G.setEdge(0,4,1);
+	G.setEdge(4,0,1);
+	G.setEdge(1,2,6);
+	G.setEdge(2,1,6);
+	G.setEdge(1,3,4);
+	G.setEdge(3,1,4);
+	G.setEdge(4,5,15);
+	G.setEdge(5,4,15);
+	G.setEdge(3,5,12);
+	G.setEdge(5,3,12);
+	G.setEdge(3,6,8);
+	G.setEdge(6,3,8);
+	G.setEdge(2,6,2);
+	G.setEdge(6,2,2);
+	G.setEdge(5,6,10);
+	G.setEdge(6,5,10);
+}
+//}}}
 
 int main(int argc, const char *argv[])
 {
-	GraphAdjl_jxc gal(5);
-	gal.setEdge(0,1,10);
-	gal.setEdge(0,4,100);
-	gal.setEdge(0,3,30);
-	gal.setEdge(1,2,50);
-	gal.setEdge(2,4,10);
-	gal.setEdge(3,2,20);
-	gal.setEdge(3,1,10);
-	gal.setEdge(3,4,60);
+	GraphAdjl_jxc gal(7)	;
+	tree7_23(gal);
+	cout << "graph:" << endl;
 	gal.print();
-	Dist d_arr[5];
-	dijkstra(gal, d_arr, 0);
-	for (int i = 0; i < 5; i++) {
-		cout << d_arr[i] << endl;
+	SPLIT_LINE;
+	Edge_jxc MST[6];
+	prim(gal,MST,0);
+	cout << "prim:" << endl;
+	for (int i = 0; i < 6; i++) {
+		cout << MST[i] << endl;
 	}
-	return 0;
+	SPLIT_LINE;
+	cout << "kruskal:" << endl;
+	kruskal(gal,MST);
+	for (int i = 0; i < 6; i++) {
+		cout << MST[i] << endl;
+	}
 }

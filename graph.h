@@ -9,11 +9,25 @@ class Edge_jxc {
   public:
 	int from, to, weight;
 
-	    Edge_jxc(int f = -1, int t = -1, int w = 0) {
+	Edge_jxc(int f = -1, int t = -1, int w = 0) {
 		from = f;
 		to = t;
 		weight = w;
-}};
+	}
+	bool operator>(const Edge_jxc &rhs){
+		return weight > rhs.weight;
+	}
+	bool operator<(const Edge_jxc &rhs){
+		return weight < rhs.weight;
+	}
+};
+
+ostream & operator<<(ostream & os, const Edge_jxc & rhs) {
+	char str[100];
+	sprintf(str, "(f:%d t:%d w:%d)", rhs.from, rhs.to, rhs.weight);
+	os << str;
+	return os;
+}
 
 //基类{{{
 
@@ -24,12 +38,12 @@ class GraphBase_jxc {
 	int *_mark;
 	int *_indegree;
   public:
-	int *mark(){
+	int *mark() {
 		return _mark;
-	}
-	int verticesNum() {
+	} int verticesNum() {
 		return _num_vertex;
-	} GraphBase_jxc(int n) {
+	}
+	GraphBase_jxc(int n) {
 		_num_vertex = n;
 		_num_edge = 0;
 		_indegree = new int[n];
@@ -38,17 +52,23 @@ class GraphBase_jxc {
 			_indegree[i] = _mark[i] = 0;
 		}
 	}
-	~GraphBase_jxc() {
+	virtual ~ GraphBase_jxc() {
 		delete[]_indegree;
 		delete[]_mark;
 	}
+	GraphBase_jxc & operator=(const GraphBase_jxc & rhs) = delete;
+	GraphBase_jxc(const GraphBase_jxc & rhs) = delete;
 	int edgesNum() {
 		return _num_edge;
 	}
 	virtual Edge_jxc firstEdge(int vertex) = 0;
 	virtual Edge_jxc nextEdge(Edge_jxc pre) = 0;
-	bool setEdge(int fv, int tv, int w);
-	bool delEdge(int fv, int tv);
+	virtual void setEdge(int fv, int tv, int w) {
+
+	}
+	virtual void delEdge(int fv, int tv) {
+
+	}
 	bool isEdge(Edge_jxc e) {
 		if (e.weight > 0 && e.from >= 0 && e.to >= 0)
 			return true;
@@ -114,7 +134,8 @@ class GraphBase_jxc {
 		aq.enQueue(v);
 		int res;
 		while (aq.deQueue(res)) {
-			if(_mark[res] == 1) break;
+			if (_mark[res] == 1)
+				break;
 			cout << res << endl;
 			_mark[res] = 1;
 			Edge_jxc e = firstEdge(res);
@@ -219,7 +240,8 @@ struct NodeAdjl_jxc {
 	int w;
 	bool operator==(const NodeAdjl_jxc & rhs) {
 		return v == rhs.v;
-}};
+	}
+};
 ostream & operator<<(ostream & os, const NodeAdjl_jxc & node)
 {
 	os << "(v:" << node.v << ",w:" << node.w << ')';
@@ -232,13 +254,14 @@ class GraphAdjl_jxc:public GraphBase_jxc {
   public:
 	Edge_jxc firstEdge(int v) {
 		Edge_jxc e;
-		if  (v < 0 || v >= _num_vertex)
-			    return e;
-		    NodeLink_jxc < NodeAdjl_jxc > *node = _lljs[v]._setPos(0);
-		if  (node != NULL)
-			    e.from = v, e.to = node->data.v, e.weight = node->data.w;
-		    return e;
-	} Edge_jxc nextEdge(Edge_jxc pre) {
+		if (v < 0 || v >= _num_vertex)
+			return e;
+		NodeLink_jxc < NodeAdjl_jxc > *node = _lljs[v]._setPos(0);
+		if (node != NULL)
+			e.from = v, e.to = node->data.v, e.weight = node->data.w;
+		return e;
+	}
+	Edge_jxc nextEdge(Edge_jxc pre) {
 		Edge_jxc e;
 		e.from = pre.from;
 		NodeLink_jxc < NodeAdjl_jxc > *p = _lljs[pre.from].getPos( {

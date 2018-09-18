@@ -9,11 +9,15 @@
 #include <functional>
 #include "bitree.h"
 #include "graph.h"
+#include "tree.h"
+#include "list.h"
+#include "stack.h"
 using std::cin;
 using std::cout;
 using std::endl;
 using std::ostream;
 #define SPLIT_LINE printf("---------------------------------------\n")
+#define INFINITY_JXC 9999
 
 //最长子序列{{{
 
@@ -354,7 +358,14 @@ class Dist {
 	int index, length, pre;
 	bool operator>(const Dist & rhs) {
 		return length > rhs.length;
-}};
+	} bool operator<(const Dist & rhs) {
+		return length < rhs.length;
+	}
+	bool operator==(const Dist & rhs) {
+		return length == rhs.length;
+	}
+};
+
 ostream & operator<<(ostream & os, const Dist & d)
 {
 	char s[100];
@@ -371,7 +382,7 @@ void dijkstra(GraphBase_jxc & g, Dist * d_arr, int s)
 	memset(mark, 0, v_num * sizeof(int));
 	for (int i = 0; i < v_num; i++) {
 		mark[i] = 0;
-		d_arr[i].index = i, d_arr[i].length = INT_MAX, d_arr[i].pre = s;
+		d_arr[i].index = i, d_arr[i].length = INFINITY_JXC, d_arr[i].pre = s;
 	}
 	d_arr[s].length = 0;
 	MinHeap_jxc < Dist > min_heap(e_num);
@@ -402,4 +413,130 @@ void dijkstra(GraphBase_jxc & g, Dist * d_arr, int s)
 }
 
 //}}}
+//Floyd计算每对顶点间的最短路径{{{
+void floyd(GraphBase_jxc & G, Dist ** D)
+{
+	int v_num = G.verticesNum();
+	for (int i = 0; i < v_num; i++) {	/* init adjm */
+		for (int j = 0; j < v_num; j++) {
+			if (i == j) {
+				D[i][j].length = 0;
+				D[i][j].pre = i;
+			} else {
+				D[i][j].length = INFINITY_JXC;
+				D[i][j].pre = -1;
+			}
+		}
+	}
+
+	for (int v = 0; v < v_num; v++) {
+		Edge_jxc e = G.firstEdge(v);
+		while (G.isEdge(e)) {
+			D[v][e.to].length = e.weight;
+			D[v][e.to].pre = v;
+			e = G.nextEdge(e);
+		}
+	}
+
+	for (int v = 0; v < v_num; v++) {	/* n times iteration */
+		for (int i = 0; i < v_num; i++) {
+			for (int j = 0; j < v_num; j++) {
+				if (D[i][j].length > (D[i][v].length + D[v][j].length)) {
+					D[i][j].length = D[i][v].length + D[v][j].length;
+					D[i][j].pre = D[v][j].pre;
+				}
+			}
+		}
+	}
+}
+
+//}}}
+//最小生成树：Prim算法{{{
+int minVertex(GraphBase_jxc & G, Dist * d_arr)
+{
+	int v_num = G.verticesNum();
+	int *mark = G.mark();
+	int res;
+	for (int i = 0; i < v_num; i++) {
+		if (mark[i] == 0) {
+			res = i;
+			break;
+		}
+	}
+	for (int i = 0; i < v_num; i++) {
+		if (mark[i] == 0 && (d_arr[i] < d_arr[res]))
+			res = i;
+	}
+	return res;
+}
+
+void prim(GraphBase_jxc & G, Edge_jxc * MST, int s)
+{
+	int v_num = G.verticesNum();
+	int *mark = G.mark();
+	memset(mark, 0, v_num * sizeof(int));
+	Dist *d_arr = new Dist[v_num];
+	for (int i = 0; i < v_num; i++) {
+		mark[i] = 0;
+		d_arr[i].index = i;
+		d_arr[i].length = INFINITY_JXC;
+		d_arr[i].pre = s;
+	}
+	d_arr[s].length = 0;
+	mark[s] = 1;
+
+	int v = s;
+	for (int i = 0; i < v_num - 1; i++) {
+		if (d_arr[v].length == INFINITY_JXC)
+			return;
+		Edge_jxc e = G.firstEdge(v);
+		while (G.isEdge(e)) {
+			if (mark[e.to] == 0 && d_arr[e.to].length > e.weight) {
+				d_arr[e.to].length = e.weight;
+				d_arr[e.to].pre = v;
+			}
+			e = G.nextEdge(e);
+		}
+		v = minVertex(G, d_arr);
+		mark[v] = 1;
+		e = {
+		d_arr[v].pre, d_arr[v].index, d_arr[v].length};
+		MST[i] = e;
+	}
+}
+
+//}}}
+//最小生成树：Kruskal算法{{{
+void kruskal(GraphBase_jxc & G, Edge_jxc * MST)
+{
+	int v_num = G.verticesNum();
+	int e_num = G.edgesNum();
+	int *mark = G.mark();
+	memset(mark, 0, v_num * sizeof(int));
+	MinHeap_jxc < Edge_jxc > min_heap(e_num);
+	Edge_jxc tmp_edge;
+	for (int i = 0; i < v_num; i++) {
+		tmp_edge = G.firstEdge(i);
+		while (G.isEdge(tmp_edge)) {
+			min_heap.insert(tmp_edge);
+			tmp_edge = G.nextEdge(tmp_edge);
+		}
+	}
+	int mst_e_num = 0;
+	ParTree_jxc < int >pt(v_num);	/* 并查集 */
+	while (true) {
+		if (min_heap.isEmpty() || mst_e_num == v_num - 1)
+			break;
+		min_heap.remove(0, tmp_edge);
+		if (!pt.different(tmp_edge.to, tmp_edge.from))
+			continue;
+		mark[tmp_edge.to] = 1;
+		mark[tmp_edge.from] = 1;
+		MST[mst_e_num++] = tmp_edge;
+		pt.conjunction(tmp_edge.to, tmp_edge.from);
+	}
+}
+
+//}}}
+
 #endif
