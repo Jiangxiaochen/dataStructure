@@ -3,6 +3,8 @@
 #include "stack.h"
 #include "queue.h"
 #include <iostream>
+#include <queue>
+#include <assert.h>
 using std::cout;
 using std::endl;
 
@@ -285,6 +287,17 @@ template < typename T > class MinHeap_jxc {
 		_cur_size = 0;
 		_max_size = n;
 		_arr = new T[n];
+		_buildHeap();
+	}
+	MinHeap_jxc(T *arr, int arr_len)
+	{
+		assert(arr_len > 0);
+		_cur_size = arr_len;
+		_max_size = arr_len;
+		_arr = new T[_max_size];
+		for (int i = 0; i < _max_size; i++) {
+			_arr[i] = arr[i];
+		}
 		_buildHeap();
 	}
 	~MinHeap_jxc() {

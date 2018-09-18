@@ -1,5 +1,7 @@
 #ifndef ds_jxc_h
 #define ds_jxc_h
+
+#include "sort.h"
 #include <ctype.h>
 #include <assert.h>
 #include <iostream>
@@ -12,12 +14,26 @@
 #include "tree.h"
 #include "list.h"
 #include "stack.h"
+using std::max;
+using std::min;
 using std::cin;
 using std::cout;
 using std::endl;
 using std::ostream;
 #define SPLIT_LINE printf("---------------------------------------\n")
 #define INFINITY_JXC 9999
+#define PRINT_ARR(ARR,LEN){\
+	for (int i = 0; i < LEN; i++) {\
+		cout << ARR[i] << " ";\
+	}\
+	cout << endl;\
+}
+#define RAND_ARR(ARR,LEN){\
+	srand(time(NULL));\
+	for (int i = 0; i < LEN; i++) {\
+		ARR[i] = rand()%2000;\
+	}\
+}
 
 //最长子序列{{{
 
@@ -328,8 +344,30 @@ bool _knap_it(int s, int n)
 
 //}}}
 //最大K个数{{{
-void findKMax_selectSort(const int *data, int len, int k, int *arr);	/* 选择排序 O(n*k) */
-void findKMax_quickSort(const int *data, int len, int k, int *arr);	/* 快排 O(n*logk) */
+void quickSearch(int arr[], int left, int right, int len, int k)
+{
+	if (right <= left)
+		return;
+	int pivot = left + (right - left) / 2;
+	swap(arr[right], arr[pivot]);
+	pivot = partition(arr, left, right);
+	int num = len - pivot;
+	if (num == k)
+		return;
+	if (num > k) {
+		quickSearch(arr, pivot + 1, right, len, k);
+	} else {
+		quickSearch(arr, left, pivot - 1, len, k);
+	}
+}
+
+void findKMax_quickSort(int *data, int len, int k, int *arr)
+{								/* 快排 O(n*logk) */
+	quickSearch(data, 0, len - 1, len, k);
+	for (int i = len - k; i < len; i++)
+		arr[i - len + k] = data[i];
+}
+
 void findKMax_minHeap(const int *data, int len, int k, int *arr)
 {								/* 最小堆 O(n*logk) */
 	static MinHeap_jxc < int >mh(k);

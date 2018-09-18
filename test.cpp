@@ -38,21 +38,33 @@ void tree7_23(GraphBase_jxc & G)
 
 int main(int argc, const char *argv[])
 {
-	GraphAdjl_jxc gal(7)	;
-	tree7_23(gal);
-	cout << "graph:" << endl;
-	gal.print();
+	int arr[20];
+	RAND_ARR(arr,20);
+	insertSort(arr,20);
+	PRINT_ARR(arr,20);
 	SPLIT_LINE;
-	Edge_jxc MST[6];
-	prim(gal,MST,0);
-	cout << "prim:" << endl;
-	for (int i = 0; i < 6; i++) {
-		cout << MST[i] << endl;
-	}
+	RAND_ARR(arr,20);
+	shellSort(arr,20);
+	PRINT_ARR(arr,20);
 	SPLIT_LINE;
-	cout << "kruskal:" << endl;
-	kruskal(gal,MST);
-	for (int i = 0; i < 6; i++) {
-		cout << MST[i] << endl;
-	}
+
+	RAND_ARR(arr,20);
+	selectSort(arr,20);
+	PRINT_ARR(arr,20);
+	SPLIT_LINE;
+
+	RAND_ARR(arr,20);
+	heapSort(arr,20);
+	PRINT_ARR(arr,20);
+	SPLIT_LINE;
+
+	RAND_ARR(arr,20);
+	bubbleSort(arr,20);
+	PRINT_ARR(arr,20);
+	SPLIT_LINE;
+
+	RAND_ARR(arr,20);
+	quickSort(arr,0,19);
+	PRINT_ARR(arr,20);
+	SPLIT_LINE;
 }
