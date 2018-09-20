@@ -34,6 +34,7 @@ using std::ostream;
 		ARR[i] = rand()%2000;\
 	}\
 }
+#define LEN_ARR(ARR) (int)(sizeof(ARR)/sizeof(ARR[0]))
 
 //最长子序列{{{
 

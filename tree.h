@@ -10,7 +10,7 @@ template < typename T > class NodeParTree_jxc {
 	int count;
 	NodeParTree_jxc() {
 		parent = NULL;
-		count = 0;
+		count = 1;
 	}
 };
 
@@ -41,9 +41,9 @@ template < typename T > class ParTree_jxc {
 		NodeParTree_jxc < T > *p2 = find(&_arr[j]);
 		if (p1 != p2) {
 			if (p1->count > p2->count)
-				p2->parent = p1;
+				p2->parent = p1, p1->count += p2->count;
 			else
-				p1->parent = p2;
+				p1->parent = p2, p2->count += p1->count;
 		}
 	}
 	NodeParTree_jxc < T > *findPC(NodeParTree_jxc < T > *node) const {	/* 带路径压缩的 */

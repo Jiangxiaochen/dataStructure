@@ -38,33 +38,4 @@ void tree7_23(GraphBase_jxc & G)
 
 int main(int argc, const char *argv[])
 {
-	int arr[20];
-	RAND_ARR(arr,20);
-	insertSort(arr,20);
-	PRINT_ARR(arr,20);
-	SPLIT_LINE;
-	RAND_ARR(arr,20);
-	shellSort(arr,20);
-	PRINT_ARR(arr,20);
-	SPLIT_LINE;
-
-	RAND_ARR(arr,20);
-	selectSort(arr,20);
-	PRINT_ARR(arr,20);
-	SPLIT_LINE;
-
-	RAND_ARR(arr,20);
-	heapSort(arr,20);
-	PRINT_ARR(arr,20);
-	SPLIT_LINE;
-
-	RAND_ARR(arr,20);
-	bubbleSort(arr,20);
-	PRINT_ARR(arr,20);
-	SPLIT_LINE;
-
-	RAND_ARR(arr,20);
-	quickSort(arr,0,19);
-	PRINT_ARR(arr,20);
-	SPLIT_LINE;
 }
