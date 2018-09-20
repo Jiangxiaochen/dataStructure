@@ -13,7 +13,7 @@
 #define RAND_ARR(ARR,LEN){\
 	srand(time(NULL));\
 	for (int i = 0; i < LEN; i++) {\
-		ARR[i] = rand()%2000;\
+		ARR[i] = rand()%1000000;\
 	}\
 }
 #define LEN_ARR(ARR) (int)(sizeof(ARR)/sizeof(ARR[0]))

@@ -1,5 +1,6 @@
 #ifndef jxc_linerar_list_h
 #define jxc_linerar_list_h
+#include <iostream>
 template < typename T > class List_jxc {
   public:
 	int _cur_len;
@@ -199,6 +200,14 @@ template < typename T > class LinkList_jxc:public List_jxc < T > {
 			p = p->next;
 		}
 		return NULL;
+	}
+	void print(){
+		NodeLink_jxc<T> *p = _head->next;
+		while(p){
+			std::cout << p->data << " ";
+			p = p->next;
+		}
+		std::cout << std::endl;
 	}
 };
 

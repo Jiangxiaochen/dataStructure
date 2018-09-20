@@ -38,15 +38,15 @@ void tree7_23(GraphBase_jxc & G)
 
 int main(int argc, const char *argv[])
 {
-	int arr[20];
-	RAND_ARR(arr,20);
-	PRINT_ARR(arr,20);
+	int arr[5000];
+	RAND_ARR(arr,5000);
+	LinkList_jxc<int> *llj;
+	buildHash(arr,5000,llj);
+	cout << SORT_M << endl;
 	SPLIT_LINE;
-	int k = arr[13];
-	int times = atoi(argv[1]);
-	while(times--)seqSearch(arr, 20, k);
-	PRINT_ARR(arr,20);
-	SPLIT_LINE;
-	cout << "search Key: " << k << endl;
-	SPLIT_LINE;
+	for (int i = 0; i < SORT_M; i++) {
+		printf("llj[%d]: ", i);
+		llj[i].print();
+	}
+	delete [] llj;
 }
