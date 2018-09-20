@@ -1,12 +1,7 @@
 #ifndef jxc_sort_h
 #define jxc_sort_h
 #include "bitree.h"
-template < typename T > static inline void swap(T & a, T & b)
-{
-	T   tmp = a;
-	a = b;
-	b = tmp;
-}
+#include "utils.h"
 
 //内排
 //插入排序{{{

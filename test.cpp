@@ -38,4 +38,15 @@ void tree7_23(GraphBase_jxc & G)
 
 int main(int argc, const char *argv[])
 {
+	int arr[20];
+	RAND_ARR(arr,20);
+	PRINT_ARR(arr,20);
+	SPLIT_LINE;
+	int k = arr[13];
+	int times = atoi(argv[1]);
+	while(times--)seqSearch(arr, 20, k);
+	PRINT_ARR(arr,20);
+	SPLIT_LINE;
+	cout << "search Key: " << k << endl;
+	SPLIT_LINE;
 }
